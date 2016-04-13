@@ -10,6 +10,10 @@
 
 #include "MainFrame.h"
 
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STBIR_SATURATE_INT
+#include "stb_image_resize.h"
+
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Chameleon Test App")
 {
 	img = nullptr;
@@ -212,6 +216,22 @@ void MainFrame::onFileOpen(wxCommandEvent &e)
 			destroyChameleon(chameleon);
 			chameleon = nullptr;
 		}
+
+		if (w > 256 || h > 256)
+		{
+			int newWidth = (w < 256 ? w : 256);
+			int newHeight = (h < 256 ? h : 256);
+			uint32_t *resizedData = new uint32_t[newWidth * newHeight];
+
+			stbir_resize_uint8_generic(reinterpret_cast<unsigned char*>(imgData), w, h, 0, reinterpret_cast<unsigned char*>(resizedData), newWidth, newHeight, 0, 4, -1, 0, STBIR_EDGE_CLAMP, STBIR_FILTER_BOX, STBIR_COLORSPACE_LINEAR, NULL);
+
+			delete[] imgData;
+
+			imgData = resizedData;
+			w = newWidth;
+			h = newHeight;
+		}
+
 		chameleon = createChameleon();
 
 		chameleonProcessImage(chameleon, imgData, w, h);

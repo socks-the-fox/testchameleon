@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="main.h" />
     <ClInclude Include="MainFrame.h" />
+    <ClInclude Include="stb_image_resize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
